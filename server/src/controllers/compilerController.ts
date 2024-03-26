@@ -26,6 +26,8 @@ export const loadCode = async (req: Request, res: Response) => {
     }
     return res.status(200).send({ fullCode: existingCode.fullCode });
   } catch (error) {
-    return res.status(500).send({ message: "Error loading code", error });
+    return res
+      .status(500)
+      .send({ message: "Invalid URL, Default code loaded", error });
   }
 };
