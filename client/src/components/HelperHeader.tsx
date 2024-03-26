@@ -26,14 +26,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useSaveCodeMutation } from "@/redux/slices/api";
 
 export default function HelperHeader() {
-  const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const [shareBtn, setShareBtn] = useState<boolean>(false);
   const navigate = useNavigate();
   const fullCode = useSelector(
     (state: RootState) => state.compilerSlice.fullCode
   );
+
+  const [saveCode, { isLoading, error }] = useSaveCodeMutation();
   const { urlId } = useParams();
   useEffect(() => {
     if (urlId) {
@@ -43,17 +45,15 @@ export default function HelperHeader() {
     }
   }, [urlId]);
   const handleSaveCode = async () => {
-    setSaveLoading(true);
     try {
-      const responce = await axios.post("http://localhost:4000/compiler/save", {
-        fullCode: fullCode,
-      });
-      console.log(responce.data);
-      navigate(`/compiler/${responce.data.url}`, { replace: true });
+      // const responce = await axios.post("http://localhost:4000/compiler/save", {
+      //   fullCode: fullCode,
+      // });
+      const response = await saveCode(fullCode).unwrap();
+
+      navigate(`/compiler/${response.url}`, { replace: true });
     } catch (error) {
       handleError(error);
-    } finally {
-      setSaveLoading(false);
     }
   };
   const dispatch = useDispatch();
@@ -68,9 +68,9 @@ export default function HelperHeader() {
           className="flex justify-center items-center gap-1"
           variant={"success"}
           onClick={handleSaveCode}
-          disabled={saveLoading}
+          disabled={isLoading}
         >
-          {saveLoading ? (
+          {isLoading ? (
             <>
               <LoaderCircle size={16} className="animate-spin" />
               Saving...

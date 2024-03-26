@@ -10,11 +10,13 @@ export const api = createApi({
       { url: string; status: string },
       compilerSliceStateType["fullCode"]
     >({
-      query: (fullCode) => ({
-        url: "/compiler/save",
-        method: "POST",
-        body: fullCode,
-      }),
+      query: (fullCode) => {
+        return {
+          url: "/compiler/save",
+          method: "POST",
+          body: fullCode,
+        };
+      },
     }),
   }),
 });
