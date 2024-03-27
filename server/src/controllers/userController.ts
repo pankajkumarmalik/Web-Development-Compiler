@@ -12,11 +12,9 @@ export const signup = async (req: Request, res: Response) => {
       return res.status(400).send({ message: "User already exists!" });
     }
     if (!usernameRegex.test(username)) {
-      return res
-        .status(400)
-        .send({
-          message: "Only alphabets and digits are allowed in username!",
-        });
+      return res.status(400).send({
+        message: "Only alphabets and digits are allowed in username!",
+      });
     }
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -42,7 +40,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     if (!existingUser) {
-      return res.status(400).send({ message: "User not found" });
+      return res.status(400).send({ message: "User not found !" });
     }
 
     const passwordMatched = await bcrypt.compare(
@@ -51,7 +49,7 @@ export const login = async (req: Request, res: Response) => {
     );
 
     if (!passwordMatched) {
-      return res.status(400).send({ message: "wrong password" });
+      return res.status(400).send({ message: "wrong password !" });
     }
 
     const jwtToken = jwt.sign(
@@ -72,7 +70,12 @@ export const login = async (req: Request, res: Response) => {
       sameSite: "lax",
     });
 
-    return res.status(200).send({ existingUser });
+    return res.status(200).send({
+      username: existingUser.username,
+      picture: existingUser.picture,
+      email: existingUser.email,
+      savedCodes: existingUser.savedCodes,
+    });
   } catch (error) {
     return res.status(500).send({ message: "Error log in!", error: error });
   }

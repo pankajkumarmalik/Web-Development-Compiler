@@ -4,6 +4,7 @@ import { compilerSliceStateType } from "./compilerSlice";
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:4000",
+    credentials: "include",
   }),
   endpoints: (builder) => ({
     saveCode: builder.mutation<
@@ -28,7 +29,15 @@ export const api = createApi({
         body: body,
       }),
     }),
+    login: builder.mutation<userInfoType, loginCredentialsType>({
+      query: (body) => ({
+        url: "user/login",
+        method: "POST",
+        body: body,
+      }),
+    }),
   }),
 });
 
-export const { useSaveCodeMutation, useLoadCodeMutation } = api;
+export const { useSaveCodeMutation, useLoadCodeMutation, useLoginMutation } =
+  api;
