@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema<IUserSchema>(
       type: String,
       default: "https://vectorified.com/images/default-user-icon-33.jpg",
     },
-    savedCodes: [{ type: mongoose.Schema.Types.ObjectId }],
+    savedCodes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Code" }],
   },
   { timestamps: true }
 );

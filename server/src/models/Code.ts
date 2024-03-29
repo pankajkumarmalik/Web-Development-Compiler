@@ -6,7 +6,7 @@ interface ICodeSchema {
     css: string;
     javascript: string;
   };
-  ownerInfo: mongoose.Schema.Types.ObjectId | string;
+  ownerInfo: mongoose.Types.ObjectId | string;
   ownerName: string;
 }
 
