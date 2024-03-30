@@ -35,15 +35,19 @@ import {
 import { toast } from "sonner";
 import { useSaveCodeMutation } from "@/redux/slices/api";
 import { Icon } from "@radix-ui/react-select";
+import { Input } from "./ui/input";
+import { title } from "process";
 
 export default function HelperHeader() {
   const [shareBtn, setShareBtn] = useState<boolean>(false);
+  const [postTitle, setPostTitle] = useState<string>("My Code");
+
   const navigate = useNavigate();
   const fullCode = useSelector(
     (state: RootState) => state.compilerSlice.fullCode
   );
 
-  const [saveCode, { isLoading, error }] = useSaveCodeMutation();
+  const [saveCode, { isLoading }] = useSaveCodeMutation();
 
   const handleDownloadCode = () => {
     if (
@@ -102,11 +106,12 @@ export default function HelperHeader() {
     }
   }, [urlId]);
   const handleSaveCode = async () => {
+    const body = { fullCode: fullCode, title: postTitle };
     try {
       // const responce = await axios.post("http://localhost:4000/compiler/save", {
       //   fullCode: fullCode,
       // });
-      const response = await saveCode(fullCode).unwrap();
+      const response = await saveCode(body).unwrap();
 
       navigate(`/compiler/${response.url}`, { replace: true });
     } catch (error) {
@@ -121,25 +126,48 @@ export default function HelperHeader() {
   return (
     <div className="__helper_header h-[50px] bg-black text-white p-2 flex justify-between item-center">
       <div className="__btn_container flex gap-2">
-        <Button
-          className="flex justify-center items-center gap-1"
-          variant={"success"}
-          onClick={handleSaveCode}
-          disabled={isLoading}
-          //size="icon"
-        >
-          {isLoading ? (
-            <>
-              <LoaderCircle size={16} className="animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              //className="flex justify-center items-center gap-1"
+              variant={"success"}
+              //onClick={handleSaveCode}
+              //disabled={isLoading}
+              //size="icon"
+            >
               <Save size={16} />
-            </>
-          )}
-        </Button>
-        <Button onClick={handleDownloadCode}>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex gap-1 justify-center items-center">
+                <Code />
+                Save your Code !
+              </DialogTitle>
+
+              <div className="__url flex justify-center items-center gap-1">
+                <Input
+                  className="bg-slate-700 focus-visible:ring-0"
+                  placeholder="Write your Code title"
+                  value={postTitle}
+                  onChange={(e) => setPostTitle(e.target.value)}
+                />
+                <Button
+                  variant="success"
+                  className="h-full"
+                  onClick={handleSaveCode}
+                >
+                  Save
+                </Button>
+              </div>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+        <Button
+          onClick={handleDownloadCode}
+          //</div>size="icon"
+          variant="default"
+        >
           <Download size={16} />
         </Button>
         {shareBtn && (

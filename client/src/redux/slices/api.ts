@@ -6,18 +6,21 @@ export const api = createApi({
     baseUrl: "http://localhost:4000",
     credentials: "include",
   }),
+  tagTypes: ["myCodes"],
   endpoints: (builder) => ({
     saveCode: builder.mutation<
       { url: string; status: string },
-      compilerSliceStateType["fullCode"]
+      { fullCode: compilerSliceStateType["fullCode"]; title: string }
     >({
       query: (fullCode) => {
+        console.log(fullCode);
         return {
           url: "/compiler/save",
           method: "POST",
           body: fullCode,
         };
       },
+      invalidatesTags: ["myCodes"],
     }),
     loadCode: builder.mutation<
       { fullCode: compilerSliceStateType["fullCode"] },
@@ -55,6 +58,13 @@ export const api = createApi({
         cache: "no-store",
       }),
     }),
+    getMyCodes: builder.query<
+      { fullCode: compilerSliceStateType["fullCode"]; title: string },
+      void
+    >({
+      query: () => "/user/my-codes",
+      providesTags: ["myCodes"],
+    }),
   }),
 });
 
@@ -65,4 +75,5 @@ export const {
   useLogoutMutation,
   useGetUserDetailsQuery,
   useSignupMutation,
+  useGetMyCodesQuery,
 } = api;

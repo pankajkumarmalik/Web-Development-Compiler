@@ -6,7 +6,8 @@ import { User } from "../models/User";
 import { userDetails } from "./userController";
 
 export const saveCode = async (req: AuthRequest, res: Response) => {
-  const fullCode: fullCodeType = req.body;
+  const { fullCode, title }: { fullCode: fullCodeType; title: string } =
+    req.body;
   let ownerName = "Anonymous";
   let user = undefined;
   let ownerInfo = undefined;
@@ -28,6 +29,7 @@ export const saveCode = async (req: AuthRequest, res: Response) => {
       fullCode: fullCode,
       ownerName: ownerName,
       ownerInfo: ownerInfo,
+      title: title,
     });
     //console.log(newCode);
     if (isAuthenticated && user) {
@@ -52,5 +54,18 @@ export const loadCode = async (req: Request, res: Response) => {
     return res
       .status(500)
       .send({ message: "Invalid URL, Default code loaded", error });
+  }
+};
+
+export const getMyCodes = async (req: AuthRequest, res: Response) => {
+  const userId = req._id;
+  try {
+    const user = await User.findById(userId).populate("savedCodes");
+    if (!user) {
+      return res.status(404).send({ message: "User not found !" });
+    }
+    return res.status(200).send(user.savedCodes);
+  } catch (error) {
+    return res.status(500).send({ message: "Error loading my codes!", error });
   }
 };
