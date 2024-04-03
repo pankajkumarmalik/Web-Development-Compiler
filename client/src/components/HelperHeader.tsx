@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import {
-  Code,
-  Copy,
-  Download,
-  LoaderCircle,
-  Save,
-  Share2,
-  icons,
-} from "lucide-react";
+import { Code, Copy, Download, Save, Share2, SquarePen } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -33,12 +25,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useSaveCodeMutation } from "@/redux/slices/api";
-import { Icon } from "@radix-ui/react-select";
+import { useEditCodeMutation, useSaveCodeMutation } from "@/redux/slices/api";
+
 import { Input } from "./ui/input";
-import { title } from "process";
 
 export default function HelperHeader() {
+  const isOwner = useSelector(
+    (state: RootState) => state.compilerSlice.isOwner
+  );
+  console.log("isOwner" + isOwner);
   const [shareBtn, setShareBtn] = useState<boolean>(false);
   const [postTitle, setPostTitle] = useState<string>("My Code");
 
@@ -48,6 +43,7 @@ export default function HelperHeader() {
   );
 
   const [saveCode, { isLoading }] = useSaveCodeMutation();
+  const [editCode, { isLoading: codeEditLoading }] = useEditCodeMutation();
 
   const handleDownloadCode = () => {
     if (
@@ -114,6 +110,17 @@ export default function HelperHeader() {
       const response = await saveCode(body).unwrap();
 
       navigate(`/compiler/${response.url}`, { replace: true });
+      toast("Code Saved Successfully!");
+    } catch (error) {
+      handleError(error);
+    }
+  };
+  const handleEditCode = async () => {
+    try {
+      if (urlId) {
+        await editCode({ fullCode, id: urlId! }).unwrap();
+        toast("Code updated successfully!");
+      }
     } catch (error) {
       handleError(error);
     }
@@ -132,8 +139,8 @@ export default function HelperHeader() {
               //className="flex justify-center items-center gap-1"
               variant={"success"}
               //onClick={handleSaveCode}
-              //disabled={isLoading}
-              //size="icon"
+              disabled={isLoading}
+              size="icon"
             >
               <Save size={16} />
             </Button>
@@ -147,7 +154,7 @@ export default function HelperHeader() {
 
               <div className="__url flex justify-center items-center gap-1">
                 <Input
-                  className="bg-slate-700 focus-visible:ring-0"
+                  className="bg-slate-800 focus-visible:ring-0"
                   placeholder="Write your Code title"
                   value={postTitle}
                   onChange={(e) => setPostTitle(e.target.value)}
@@ -163,57 +170,63 @@ export default function HelperHeader() {
             </DialogHeader>
           </DialogContent>
         </Dialog>
-        <Button
-          onClick={handleDownloadCode}
-          //</div>size="icon"
-          variant="default"
-        >
+        <Button onClick={handleDownloadCode} size="icon" variant="default">
           <Download size={16} />
         </Button>
-        {shareBtn && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant={"secondary"}
-                //size="icon"
-              >
-                <Share2 size={16} />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="flex gap-1 justify-center items-center">
-                  <Code />
-                  Share your Code !
-                </DialogTitle>
-                <DialogDescription className="flex flex-col gap-2">
-                  <div className="__url flex gap-1">
-                    <input
-                      type="text"
-                      disabled
-                      className="w-full px-2 py-2 rounded bg-slate-800 text-slate-400 select-none"
-                      value={window.location.href}
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        window.navigator.clipboard.writeText(
-                          window.location.href
-                        );
-                        toast("URL copied to your clipboard !");
-                      }}
-                    >
-                      <Copy size={16} />
-                    </Button>
-                  </div>
 
-                  <p className="text-center">
-                    Share this URL with your friends to collaborate.
-                  </p>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+        {shareBtn && (
+          <>
+            {isOwner && (
+              <Button
+                loading={codeEditLoading}
+                onClick={handleEditCode}
+                size="icon"
+                variant="default"
+              >
+                <SquarePen size={16} />
+              </Button>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant={"secondary"} size="icon">
+                  <Share2 size={16} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="flex gap-1 justify-center items-center">
+                    <Code />
+                    Share your Code !
+                  </DialogTitle>
+                  <DialogDescription className="flex flex-col gap-2">
+                    <div className="__url flex gap-1">
+                      <input
+                        type="text"
+                        disabled
+                        className="w-full px-2 py-2 rounded bg-slate-800 text-slate-400 select-none"
+                        value={window.location.href}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          window.navigator.clipboard.writeText(
+                            window.location.href
+                          );
+                          toast("URL copied to your clipboard !");
+                        }}
+                      >
+                        <Copy size={16} />
+                      </Button>
+                    </div>
+
+                    <p className="text-center">
+                      Share this URL with your friends to collaborate.
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </>
         )}
       </div>
       <div className="__tab_switcher flex justify-center items-center gap-1">

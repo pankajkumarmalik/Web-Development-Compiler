@@ -8,7 +8,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { useLoadCodeMutation } from "@/redux/slices/api";
-import { updateFullCode } from "@/redux/slices/compilerSlice";
+import { updateFullCode, updateIsOwner } from "@/redux/slices/compilerSlice";
 import { handleError } from "@/utils/handleError";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -26,6 +26,7 @@ export default function Compiler() {
       if (urlId) {
         const response = await loadExistingCode({ urlId }).unwrap();
         dispatch(updateFullCode(response.fullCode));
+        dispatch(updateIsOwner(response.isOwner));
       }
     } catch (error) {
       // if (axios.isAxiosError(error)) {
@@ -50,7 +51,10 @@ export default function Compiler() {
     );
 
   return (
-    <ResizablePanelGroup direction="horizontal" className=" rounded-lg ">
+    <ResizablePanelGroup
+      direction="horizontal"
+      className=" rounded-lg pt-[60px]"
+    >
       <ResizablePanel
         className="h-[calc(100dvh-60px)] min-w-[350px]"
         defaultSize={50}

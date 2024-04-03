@@ -1,17 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { compilerSliceStateType } from "./compilerSlice";
+import {
+  codeType,
+  loginCredentialsType,
+  signupCredentialsType,
+  userInfoType,
+} from "@/vite-env";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:4000",
     credentials: "include",
   }),
-  tagTypes: ["myCodes"],
+  tagTypes: ["myCodes", "allCodes"],
   endpoints: (builder) => ({
-    saveCode: builder.mutation<
-      { url: string; status: string },
-      { fullCode: compilerSliceStateType["fullCode"]; title: string }
-    >({
+    saveCode: builder.mutation<{ url: string; status: string }, codeType>({
       query: (fullCode) => {
         console.log(fullCode);
         return {
@@ -20,10 +23,10 @@ export const api = createApi({
           body: fullCode,
         };
       },
-      invalidatesTags: ["myCodes"],
+      invalidatesTags: ["myCodes", "allCodes"],
     }),
     loadCode: builder.mutation<
-      { fullCode: compilerSliceStateType["fullCode"] },
+      { fullCode: compilerSliceStateType["fullCode"]; isOwner: boolean },
       { urlId: string }
     >({
       query: (body) => ({
@@ -58,12 +61,36 @@ export const api = createApi({
         cache: "no-store",
       }),
     }),
-    getMyCodes: builder.query<
-      { fullCode: compilerSliceStateType["fullCode"]; title: string },
-      void
-    >({
+    getMyCodes: builder.query<Array<codeType>, void>({
       query: () => "/user/my-codes",
       providesTags: ["myCodes"],
+    }),
+    deleteCode: builder.mutation<void, string>({
+      query: (_id) => ({
+        url: `/compiler/delete/${_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["myCodes", "allCodes"],
+    }),
+    editCode: builder.mutation<
+      void,
+      { fullCode: compilerSliceStateType["fullCode"]; id: string }
+    >({
+      query: ({ fullCode, id }) => ({
+        url: `/compiler/edit/${id}`,
+        method: "PUT",
+        body: fullCode,
+      }),
+    }),
+    getAllCodes: builder.query<
+      Array<{ _id: string; title: string; ownerName: string }>,
+      void
+    >({
+      query: () => ({
+        url: "/compiler/get-all-codes",
+        cache: "no-store",
+      }),
+      providesTags: ["allCodes"],
     }),
   }),
 });
@@ -76,4 +103,7 @@ export const {
   useGetUserDetailsQuery,
   useSignupMutation,
   useGetMyCodesQuery,
+  useDeleteCodeMutation,
+  useEditCodeMutation,
+  useGetAllCodesQuery,
 } = api;
