@@ -78,3 +78,13 @@
 body {
   height: 100%;
 }
+
+.resizable-handle {
+  border: 2px solid #000000; /* Default thin gray line */
+  transition: border-color 0.3s; /* Add transition effect */
+}
+
+.resizable-handle:hover {
+  border-color: #1d7eed; /* Change border color to blue when hovered over */
+  border-width: 2px; /* Increase border width to 2px */
+}

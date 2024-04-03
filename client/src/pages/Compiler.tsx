@@ -62,7 +62,7 @@ export default function Compiler() {
         <HelperHeader />
         <CodeEditor />
       </ResizablePanel>
-      <ResizableHandle />
+      <ResizableHandle className="resizable-handle" withHandle />
       <ResizablePanel
         className="h-[calc(100dvh-60px)] min-w-[350px]"
         defaultSize={50}

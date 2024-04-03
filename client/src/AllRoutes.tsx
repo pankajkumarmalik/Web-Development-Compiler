@@ -2,13 +2,6 @@ import { Route, Routes } from "react-router-dom";
 
 import { Suspense, lazy } from "react";
 import Loader from "./components/loader/Loader";
-// import Home from "./pages/Home";
-// import AllCodes from "./pages/AllCodes";
-// import Compiler from "./pages/Compiler";
-// import Login from "./pages/Login";
-// import MyCodes from "./pages/MyCodes";
-// import NotFound from "./pages/NotFound";
-// import Signup from "./pages/Signup";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -27,7 +20,6 @@ export default function AllRoutes() {
         </div>
       }
     >
-      {/* <div className="w-full h-[calc(100dvh-60px)] flex justify-center items-center"> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -37,7 +29,6 @@ export default function AllRoutes() {
         <Route path="/compiler/:urlId?" element={<Compiler />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {/* </div> */}
     </Suspense>
   );
 }

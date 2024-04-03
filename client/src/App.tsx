@@ -6,14 +6,6 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateCurrentUser, updateIsLoggedIn } from "./redux/slices/appSlice";
 import AllRoutes from "./AllRoutes";
-import { Route, Routes } from "react-router-dom";
-import { Home } from "lucide-react";
-import AllCodes from "./pages/AllCodes";
-import Compiler from "./pages/Compiler";
-import Login from "./pages/Login";
-import MyCodes from "./pages/MyCodes";
-import NotFound from "./pages/NotFound";
-import Signup from "./pages/Signup";
 
 function App() {
   const { data, error } = useGetUserDetailsQuery();
