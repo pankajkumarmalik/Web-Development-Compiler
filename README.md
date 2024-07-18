@@ -4,11 +4,13 @@ A full-stack web development project that provides a user-friendly code editor w
 
 ## Features
 
-* 💻 Code Editor with syntax highlighting and auto-completion
+* 💻 Code Editor with syntax highlighting and auto-completion for writing HTML, CSS and JavaScript
 * 🚀 Real-time Preview of web pages
 * 🔒 User Authentication with signup, login, logout, and secure code saving using JWT (JSON Web Token)
-* 📁 Code Saving and Sharing with unique links
-* 📝 Edit and Download code features
+* 📁 Save code securely
+* 🔗 Share code with unique links
+* 📝 Edit previously saved codes
+* 📥 Download HTML, CSS, JavaScript code files
 * 👀 Anonymous user mode for writing and saving code without an account
 * 📊 User dashboard for managing saved codes
 
