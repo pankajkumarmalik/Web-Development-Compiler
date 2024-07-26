@@ -1,4 +1,4 @@
-# Web Development Compiler
+# DevEditor
 
 A full-stack web development project that provides a user-friendly code editor website for writing, compiling, and previewing HTML, CSS, and JavaScript code.
 
